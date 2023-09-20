@@ -4,18 +4,19 @@ class SessionsController < ApplicationController
     end
 
     def create
-        user = User.find_by(email: params[:session][:email].downcase)
-        if user
-            print('Login efetuado')
-            session[:user_id] = user.id
+        @user = User.find_by(email: params[:session][:email].downcase)
+        if @user
+            session[:user_id] = @user.id
+            session[:email] = @user.email
             flash[:notice] = 'Logged with sucessfully'
-        else
-            print('Não foi possível')
+            redirect_to rooms_path
         end
-    
     end
 
     def destroy
+        print('destroyed')
+        session[:user_id] = nil
+        redirect_to root_path
     end
     
 end
