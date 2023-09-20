@@ -2,3 +2,32 @@
     <p class="p-5"> | <%= link_to "Logout", logout_path, method: :delete %></p>
     <p class="p-5"><%= @email %></p> 
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">Horário</th>
+                    <th scope="col">Segunda</th>
+                    <th scope="col">Terça</th>
+                    <th scope="col">Quarta</th>
+                    <th scope="col">Quinta</th>
+                    <th scope="col">Sexta</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        <tr v-for="i in 18">
+                            <td>
+                                {{5 + i}}:00
+                            </td>
+                            <td v-for="j in 5">
+                                <a href="#" @click="scheduleHour">Disponível</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+</div>
