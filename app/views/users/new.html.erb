@@ -1,0 +1,40 @@
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Cadastre-se !</h3></div>
+                                <div class="card-body">
+                                <% flash.each do |type, msg| %>
+                                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                        <%= msg %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                <% end %>
+                                <%= form_with(model: @user, class: "card border-0 rounded-lg mt-5", local: true) do |form| %>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= form.text_field :username, class: "form-control", id:"inputUsername", placeholder:"Username"%>
+                                        <%= form.label :username, for: "inputUsername" %>
+                                    </div>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= form.text_field :email, class: "form-control", id:"inputEmail", placeholder:"E-mail"%>
+                                         <%= form.label :email, for: "inputEmail" %>
+                                    </div>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= form.text_field :password, class: "form-control", id:"inputPassword", placeholder:"Password"%>
+                                        <%= form.label :password, for: "inputPassword" %>
+                                    </div>
+                                    <div class="d-grid gap-2 col-6 mx-auto mt-3">
+                                        <%= form.submit 'Confirmar', class: "btn btn-outline-info btn-lg" %>
+                                        <%= link_to "Tela de Login", root_path, class:"btn btn-outline-info btn-lg"%>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
