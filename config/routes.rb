@@ -4,11 +4,12 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   root "sessions#new"
-  resources :rooms, only: [:index]
+  resources :events, only: [:index, :new, :create, :destroy, :delete]
 
   resources :users, only: [:new, :create]
 
-  #get 'login', to: 'sessions#new'
+  get "get_events", to: "events#get_events"
+
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
 
