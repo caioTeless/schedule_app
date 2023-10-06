@@ -18,15 +18,18 @@ class EventsController < ApplicationController
         @event = Event.new(params.require(:event).permit(:start, :end, :user_id))
         if @event.save
             flash[:notice] = "Hora marcada com sucesso !"
+            get_events()
         else
             flash[:alert] = "Erro ao marcar um horário ! Tente novamente"
-            render events_path
         end
     end
 
     def destroy
-        #@event = Event.find(params[:event_id])
-        @event.destroy 
-        redirect_to events_path
+        @event = Event.find(params[:id])
+        if @event.destroy
+            flash[:notice] = "Removido com sucesso"
+        else 
+            flash[:alert] = "Erro encontrado."
+        end
     end
 end

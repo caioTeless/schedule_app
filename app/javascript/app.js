@@ -11,25 +11,12 @@ var app = new Vue({
             start: '',
             end: '',
         },
-        start: '',
-        events: null,
-        infoDate: false,
+        modalMethod: '',
+        eventId: 0,
     },
     methods: {
-        validateAndShowAlert() {
-            debugger
-            if (validationPasses) {
-                this.infoDate = true; 
-            } else {
-                this.infoDate = false; 
-            }
-        },
-        hideAlert() {
-            this.infoDate = false;
-        },
         renderScheduleCalendar() {
-            var initialTimeZone = 'UTC';
-            var timeZoneSelectorEl = document.getElementById('time-zone-selector');
+            var self = this;
             var loadingEl = document.getElementById('loading');
             var calendarEl = document.getElementById('calendar');
 
@@ -78,13 +65,17 @@ var app = new Vue({
                 },
 
                 select: function (eventInfo) {
+                    self.modalMethod = 'addSchedule';
+
                     var events = calendar.getEvents();
                     var currentDate = new Date();
+
                     var isOverlap = events.some(function (existingEvent) {
                         return (
                             eventInfo.start < existingEvent.end && eventInfo.end > existingEvent.start
                         );
                     });
+
                     if (eventInfo.start > currentDate) {
                         if (!isOverlap) {
                             $('#confirmModal').modal('show');
@@ -94,19 +85,17 @@ var app = new Vue({
                                     start: eventInfo.startStr,
                                     end: eventInfo.endStr
                                 }
-                                
                                 $.ajax({
                                     url: "events",
                                     type: 'POST',
                                     data: { event: this.eventData },
                                     success: function (e) {
                                         calendar.addEvent({
+                                            id: e.event_id,
                                             title: $("#username")[0].innerHTML,
                                             start: eventInfo.startStr,
                                             end: eventInfo.endStr,
                                         });
-                                        this.eventData = null;
-                                        return;
                                     },
                                     error: function (e) {
                                         alert('Erro ajax');
@@ -114,6 +103,9 @@ var app = new Vue({
                                 });
 
                                 $('#confirmModal').modal('hide');
+                                setTimeout(function () {
+                                    $("#alert").fadeOut();
+                                }, 3000);
                             });
                         };
                     } else {
@@ -122,22 +114,48 @@ var app = new Vue({
                 },
 
                 eventClick: function (info) {
-                    $.ajax({
-                        url: 'event/' + info.event.extendedProps.event_id,
-                        type: 'DELETE',
-                        success: function (data) {
-                            info.event.remove();
-                            alert('success');
-                        },
-                        error: function (e) {
-                            debugger
-                            alert('Error ajax')
-                        }
+                    self.modalMethod = 'delSchedule';
+                    var id = info.event.extendedProps.event_id;
+                    if (!id > 0) {
+                        $.ajax({
+                            url: 'get_events',
+                            type: 'GET',
+                            success: function (data) {
+                                data.map(function (x) {
+                                    if (x.start.substring(0, 19) == info.event.startStr) {
+                                        id = x.event_id
+                                    }
+                                });
+                            },
+                            error: function () {
+                                failureCallback('Error fetching events');
+                            }
+                        });
+                    }
+                    $('#confirmModal').modal('show');
+                    $('#confirmModalButton').off('click').on('click', function () {
+                        $.ajax({
+                            url: 'events/' + id,
+                            type: 'DELETE',
+                            success: function (data) {
+                                info.event.remove();
+                                $("#alert").fadeIn();
+                            },
+                            error: function (e) {
+                                alert('Error ajax ' + e.message)
+                            }
+                        })
+
+                        $('#confirmModal').modal('hide');
                     })
-                  },
+                    setTimeout(function () {
+                        $("#alert").fadeOut();
+                    }, 3000);
+                },
 
             });
             calendar.render();
+
             $.ajax({
                 url: 'get_events',
                 type: 'GET',
@@ -156,6 +174,17 @@ var app = new Vue({
                     failureCallback('Error fetching events');
                 }
             });
+        },
+    },
+    computed: {
+        modalTitle() {
+            return this.modalMethod === 'addSchedule' ? 'Agendar' : 'Remover';
+        },
+        modalMessage() {
+            return this.modalMethod === 'addSchedule' ? 'Confirma o agendamento para' : 'Deseja remover o agendamento de';
+        },
+        alertTitle() {
+            return this.modalMethod === 'addSchedule' ? 'Adicionado com sucesso' : 'Removido com sucesso';
         },
     },
 
