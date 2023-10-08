@@ -1,0 +1,22 @@
+pt-BR:
+  activerecord:
+    attributes:
+      user:
+        username: "Nome de usuário"
+        email: "E-mail"
+        password: "Senha"
+        password_confirmation: "Confirmar"
+    errors:
+      models:
+        user:
+          attributes:
+            username:
+              blank: "não pode ficar em branco"
+            email:
+              invalid: "deve ser um endereço válido"
+            password:
+              too_short: "é muito curta (mínimo é de %{count} caracteres)"
+              blank: 'não pode ficar em branco'
+              invalid: "deve conter pelo menos um caractere maiúsculo e um caractere especial"
+            password_confirmation:
+              invalid: "Deve ser igual a senha"

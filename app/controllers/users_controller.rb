@@ -5,11 +5,10 @@ class UsersController < ApplicationController
     end
 
     def create
-        @user = User.new(params.require(:user).permit(:username, :email, :password))
+        @user = User.new(params.require(:user).permit(:username, :email, :password, :password_confirmation))
         if @user.save
             flash[:notice] = "Usuário criado com sucesso !"
             session[:user_id] = @user.id
-            session[:email] = @user.email
             redirect_to events_path
         else 
             flash[:alert] = "Ocorreu uma inconsistência, verifique os campos !"

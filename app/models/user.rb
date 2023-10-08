@@ -15,4 +15,8 @@ class User < ApplicationRecord
     format: {with: EMAIL_VALIDATOR_REGEX}
 
     has_secure_password
+    # validates :password, length: { minimum: 8 }, confirmation: true
+    # attr_accessor :password_confirmation
+    # validates :password_confirmation, confirmation: { message: "A confirmação de senha não coincide com a senha" }
+    
 end

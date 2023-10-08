@@ -65,6 +65,9 @@ var app = new Vue({
                 },
 
                 select: function (eventInfo) {
+
+                    var selectedDuration = eventInfo.end - eventInfo.start;
+
                     self.modalMethod = 'addSchedule';
 
                     var events = calendar.getEvents();
@@ -75,41 +78,44 @@ var app = new Vue({
                             eventInfo.start < existingEvent.end && eventInfo.end > existingEvent.start
                         );
                     });
-
-                    if (eventInfo.start > currentDate) {
-                        if (!isOverlap) {
-                            $('#confirmModal').modal('show');
-                            $('#confirmModalButton').off('click').on('click', function () {
-                                this.eventData = {
-                                    user_id: $("#userId")[0].innerHTML,
-                                    start: eventInfo.startStr,
-                                    end: eventInfo.endStr
-                                }
-                                $.ajax({
-                                    url: "events",
-                                    type: 'POST',
-                                    data: { event: this.eventData },
-                                    success: function (e) {
-                                        calendar.addEvent({
-                                            id: e.event_id,
-                                            title: $("#username")[0].innerHTML,
-                                            start: eventInfo.startStr,
-                                            end: eventInfo.endStr,
-                                        });
-                                    },
-                                    error: function (e) {
-                                        alert('Erro ajax');
+                    if (selectedDuration === 60 * 60 * 1000) {
+                        if (eventInfo.start > currentDate) {
+                            if (!isOverlap) {
+                                $('#confirmModal').modal('show');
+                                $('#confirmModalButton').off('click').on('click', function () {
+                                    this.eventData = {
+                                        user_id: $("#userId")[0].innerHTML,
+                                        start: eventInfo.startStr,
+                                        end: eventInfo.endStr
                                     }
-                                });
+                                    $.ajax({
+                                        url: "events",
+                                        type: 'POST',
+                                        data: { event: this.eventData },
+                                        success: function (e) {
+                                            calendar.addEvent({
+                                                id: e.event_id,
+                                                title: $("#username")[0].innerHTML,
+                                                start: eventInfo.startStr,
+                                                end: eventInfo.endStr,
+                                            });
+                                        },
+                                        error: function (e) {
+                                            alert('Erro ajax');
+                                        }
+                                    });
 
-                                $('#confirmModal').modal('hide');
-                                setTimeout(function () {
-                                    $("#alert").fadeOut();
-                                }, 3000);
-                            });
-                        };
-                    } else {
-                        alert('Não é possível agendar em datas passadas ou já existe agendamento !');
+                                    $('#confirmModal').modal('hide');
+                                    setTimeout(function () {
+                                        $("#alert").fadeOut();
+                                    }, 3000);
+                                });
+                            };
+                        } else {
+                            alert('Não é possível agendar em datas passadas ou já existe agendamento !');
+                        }
+                    }else {
+                        alert('Selecione apenas um horário por vez');
                     }
                 },
 

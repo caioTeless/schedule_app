@@ -1,7 +1,8 @@
 class EventsController < ApplicationController
     def index
-        @current_user_username = session[:username]
-        @current_user_id = session[:user_id]
+        @user = User.find(session[:user_id])
+        @current_user_username = @user.username
+        @current_user_id = @user.id
     end
 
     def get_events
