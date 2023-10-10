@@ -5,8 +5,9 @@ class SessionsController < ApplicationController
 
     def create
         @user = User.find_by(email: params[:session][:email].downcase)
-        if @user && @user.authenticate(params[:session][:password])
+        if @user && @user.authenticate(params[:session][:password]) && @user.active?
             session[:user_id] = @user.id
+            session[:admin] = @user.admin
             flash[:notice] = 'Login realizado !'
             redirect_to events_path
         else 

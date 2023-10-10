@@ -1,0 +1,60 @@
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Atualize seus dados !</h3></div>
+                                <%= render 'shared/errors', obj: @user %>
+                                <div class="card-body">
+                                    <%= form_with(model: @user, class: "card border-0 rounded-lg", local: true) do |form| %>
+                                        <div class="form-floating mb-3 mt-3 mb-md-0">
+                                            <%= form.text_field :first_name, class: "form-control", id:"inputFirstName", placeholder:"Nome"%>
+                                            <%= form.label :first_name, for: "inputFirstName" %>
+                                        </div>
+                                        <div class="form-floating mb-3 mt-3 mb-md-0">
+                                            <%= form.text_field :last_name, class: "form-control", id:"inputLastName", placeholder:"Sobrenome"%>
+                                            <%= form.label :last_name, for: "inputLastName" %>
+                                        </div>
+                                        <div class="form-floating mb-3 mt-3 mb-md-0">
+                                            <%= form.text_field :username, class: "form-control", id:"inputUsername", placeholder:"Username"%>
+                                            <%= form.label :username, for: "inputUsername" %>
+                                        </div>
+                                        <% if @admin %>
+                                            <div class="form-floating mb-3 mt-3 mb-md-0">
+                                                <%= form.text_field :email, class: "form-control", id:"inputEmail", placeholder:"E-mail"%>
+                                                <%= form.label :email, for: "inputEmail" %>
+                                            </div>
+                                            <div class="form-floating mb-3 mt-3 mb-md-0">
+                                                <%= form.password_field :password, class: "form-control", id:"inputPassword", placeholder:"Password"%>
+                                                <%= form.label :password, for: "inputPassword" %>
+                                            </div>
+                                            <div class="form-floating mb-3 mt-3 mb-md-0">
+                                                <%= form.password_field :password_confirmation, class: "form-control", id:"inputPasswordConfigrmation", placeholder:"Password"%>
+                                                <%= form.label :password_confirmation, for: "inputPasswordConfigrmation" %>
+                                            </div>
+                                            <div class="mt-3 mb-3 form-inline">
+                                                <div class="form-check form-check-inline">
+                                                    <%= form.check_box :admin, class: "form-check-input"%>
+                                                    <%= form.label :admin, "Usuário admin ?", class: "form-check-label" %>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <%= form.check_box :active, class: "form-check-input" %>
+                                                    <%= form.label :active, "Usuário ativo ?", class: "form-check-label" %>
+                                                </div>
+                                            </div>
+                                        <% end %>
+                                        <div class="d-grid gap-2 col-6 mx-auto mt-3">
+                                            <%= form.submit "Atualizar", class: "btn btn-outline-info btn-lg", data: { disable_with: "Validando" } %>
+                                            <%= link_to "Sala de reunião", events_path, class:"btn btn-outline-info btn-lg"%>
+                                        </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

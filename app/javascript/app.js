@@ -2,10 +2,6 @@ var app = new Vue({
     el: '#app',
     data: {
         confirmModal: false,
-        user: {
-            email: '',
-            username: '',
-        },
         eventData: {
             userId: '',
             start: '',
@@ -17,6 +13,8 @@ var app = new Vue({
     methods: {
         renderScheduleCalendar() {
             var self = this;
+
+            var initialTimeZone = 'UTC';
             var loadingEl = document.getElementById('loading');
             var calendarEl = document.getElementById('calendar');
 
@@ -30,7 +28,7 @@ var app = new Vue({
                     list: 'Lista'
                 },
                 slotLabelFormat: 'HH:mm',
-                timeZone: 'America/Sao_Paulo',
+                timeZone: 'UTC',
                 initialView: 'timeGridWeek',
                 slotDuration: '1:00:00',
                 firstDay: 1,
@@ -69,9 +67,10 @@ var app = new Vue({
                     var selectedDuration = eventInfo.end - eventInfo.start;
 
                     self.modalMethod = 'addSchedule';
-
                     var events = calendar.getEvents();
                     var currentDate = new Date();
+                    currentDate = moment(currentDate).format('YYYY/MM/DD HH:mm')
+                    var formatStartDate = moment.utc(eventInfo.startStr).format('YYYY/MM/DD HH:mm')
 
                     var isOverlap = events.some(function (existingEvent) {
                         return (
@@ -79,12 +78,12 @@ var app = new Vue({
                         );
                     });
                     if (selectedDuration === 60 * 60 * 1000) {
-                        if (eventInfo.start > currentDate) {
+                        if (formatStartDate > currentDate) {
                             if (!isOverlap) {
                                 $('#confirmModal').modal('show');
                                 $('#confirmModalButton').off('click').on('click', function () {
                                     this.eventData = {
-                                        user_id: $("#userId")[0].innerHTML,
+                                        user_id: $("#iuShow")[0].innerHTML,
                                         start: eventInfo.startStr,
                                         end: eventInfo.endStr
                                     }
@@ -95,7 +94,7 @@ var app = new Vue({
                                         success: function (e) {
                                             calendar.addEvent({
                                                 id: e.event_id,
-                                                title: $("#username")[0].innerHTML,
+                                                title: $("#userName")[0].innerHTML,
                                                 start: eventInfo.startStr,
                                                 end: eventInfo.endStr,
                                             });
@@ -114,7 +113,7 @@ var app = new Vue({
                         } else {
                             alert('Não é possível agendar em datas passadas ou já existe agendamento !');
                         }
-                    }else {
+                    } else {
                         alert('Selecione apenas um horário por vez');
                     }
                 },
@@ -128,7 +127,7 @@ var app = new Vue({
                             type: 'GET',
                             success: function (data) {
                                 data.map(function (x) {
-                                    if (x.start.substring(0, 19) == info.event.startStr) {
+                                    if (moment.utc(x.start).format('YYYY/MM/DD HH:mm') == moment.utc(info.event.startStr).format('YYYY/MM/DD HH:mm')) {
                                         id = x.event_id
                                     }
                                 });
@@ -145,10 +144,11 @@ var app = new Vue({
                             type: 'DELETE',
                             success: function (data) {
                                 info.event.remove();
-                                $("#alert").fadeIn();
                             },
                             error: function (e) {
-                                alert('Error ajax ' + e.message)
+                                if (e.status = 422) {
+                                    alert('Você não está autorizado')
+                                }
                             }
                         })
 
@@ -169,25 +169,32 @@ var app = new Vue({
                     data.forEach(function (newData, i) {
                         calendar.addEvent({
                             event_id: newData.event_id,
-                            title: newData.username,
+                            title: newData.first_name + ' ' + newData.last_name,
                             start: newData.start,
                             end: newData.end,
                             user_id: newData.user_id
                         })
-                    })
+                    });
                 },
                 error: function () {
                     failureCallback('Error fetching events');
                 }
             });
         },
+        countDownChanged(dismissCountDown) {
+            this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+            this.dismissCountDown = this.dismissSecs
+        }
+
     },
     computed: {
         modalTitle() {
             return this.modalMethod === 'addSchedule' ? 'Agendar' : 'Remover';
         },
         modalMessage() {
-            return this.modalMethod === 'addSchedule' ? 'Confirma o agendamento para' : 'Deseja remover o agendamento de';
+            return this.modalMethod === 'addSchedule' ? 'Confirma o agendamento ? ' : 'Deseja remover o agendamento ?';
         },
         alertTitle() {
             return this.modalMethod === 'addSchedule' ? 'Adicionado com sucesso' : 'Removido com sucesso';
@@ -198,3 +205,4 @@ var app = new Vue({
         this.renderScheduleCalendar();
     },
 });
+

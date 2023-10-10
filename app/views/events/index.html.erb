@@ -1,16 +1,23 @@
-<%# <div id="alert" class="alert alert-success alert-dismissible fade show" role="alert" >
-  {{ alertTitle }}
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div> %>
-
 <div class="container">
+  <div class="row">
     <div class="d-flex flex-row-reverse">
         <p class="p-3"> | <%= link_to "Logout", logout_path, method: :delete %></p>
-        <p id="username" class="p-3"><%= @current_user_username.upcase %></p> 
-        <div id="userId" style="display: none;"><%= @current_user_id %></div>
-    </div>
-    <div id="calendar"></div>
+        <div id="iuShow" style="display: none;"><%= @current_user_id %></div>
+        <div class="dropdown">
+          <a class="text-decoration-none text-secondary" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <p id="userName" class="p-3"><%= @current_user_name.upcase %></p> 
+          </a>
 
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><%= link_to "Editar Dados", edit_user_path(@user), class: "dropdown-item" %></li>
+            <% if @admin %>
+              <li><%= link_to "Usuários", users_path, class: "dropdown-item" %></li>
+            <% end %>
+          </ul>
+        </div>
+    </div>
+  <div>
+  <div id="calendar"></div>
 </div>
 
 <div id="confirmModal" class="modal" tabindex="-1">
@@ -21,7 +28,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>{{ modalMessage }} - <strong><%= @current_user_username.upcase %></strong> ?</p>
+        <p>{{ modalMessage }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>

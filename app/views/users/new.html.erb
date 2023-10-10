@@ -9,6 +9,14 @@
                                 <div class="card-body">
                                     <%= form_with(model: @user, class: "card border-0 rounded-lg", local: true) do |form| %>
                                         <div class="form-floating mb-3 mt-3 mb-md-0">
+                                            <%= form.text_field :first_name, class: "form-control", id:"inputFirstName", placeholder:"Nome"%>
+                                            <%= form.label :first_name, for: "inputFirstName" %>
+                                        </div>
+                                        <div class="form-floating mb-3 mt-3 mb-md-0">
+                                            <%= form.text_field :last_name, class: "form-control", id:"inputLastName", placeholder:"Sobrenome"%>
+                                            <%= form.label :last_name, for: "inputLastName" %>
+                                        </div>
+                                        <div class="form-floating mb-3 mt-3 mb-md-0">
                                             <%= form.text_field :username, class: "form-control", id:"inputUsername", placeholder:"Username"%>
                                             <%= form.label :username, for: "inputUsername" %>
                                         </div>

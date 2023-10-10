@@ -13,3 +13,4 @@ pin "bootstrap", to: "bootstrap.min.js", preload: true
 pin "vue", to: "vue.min.js", preload: true
 pin "app", to: "app.js", preload: true
 pin "calendar", to: "calendar.js", preload: true
+pin "alerts", to: "alerts.js", preload: true

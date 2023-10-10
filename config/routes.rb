@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   root "sessions#new"
   resources :events, only: [:index, :new, :create, :destroy, :delete]
 
-  resources :users, only: [:new, :create]
+  resources :users, only: [:index, :new, :create, :edit, :update]
 
   get "get_events", to: "events#get_events"
 
