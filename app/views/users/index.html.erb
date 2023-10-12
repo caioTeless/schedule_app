@@ -1,5 +1,6 @@
+
 <div class="container p-5">
-    <table class="table align-middle mb-0 bg-white table-hover">
+    <table class="table align-middle bg-white table-hover">
         <thead class="bg-light">
             <tr>
             <th>Nome</th>
@@ -31,7 +32,12 @@
             <% end %>
         </tbody>
     </table>
+
+    <%= paginate @users%>
+    
     <div class="d-grid gap-2 col-6 mx-auto mt-3">
         <%= link_to "Sala de reunião", events_path, class:"btn btn-outline-info btn-lg"%>
     </div>
 </div>
+
+

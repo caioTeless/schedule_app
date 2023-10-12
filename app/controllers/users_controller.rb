@@ -4,6 +4,11 @@ class UsersController < ApplicationController
 
     def index
         @users = User.all
+        unless @users.kind_of?(Array)
+            @users = @users.page(params[:page]).per(10)
+        else 
+            @users = Kaminari.paginate_array(@users).page(params[:page]).per(10)
+        end
     end
 
     def new

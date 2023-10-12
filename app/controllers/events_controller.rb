@@ -37,11 +37,7 @@ class EventsController < ApplicationController
 
     def destroy
         @event = Event.find(params[:id])
-        if @event.destroy
-            flash[:notice] = "Removido com sucesso"
-        else 
-            flash[:alert] = "Erro encontrado."
-        end
+        @event.destroy
     end
 
     def require_same_user

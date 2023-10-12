@@ -1,4 +1,11 @@
 pt-BR:
+  views:
+    pagination:
+      first: "Primeira"
+      last: "Última"
+      previous: "Anterior"
+      next: "Próxima"
+      truncate: "&hellip;"
   activerecord:
     attributes:
       user:
