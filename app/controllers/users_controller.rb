@@ -27,7 +27,6 @@ class UsersController < ApplicationController
 
     def update
         if @user.update(params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation, :admin, :active))
-            flash[:notice] = "The user has been updated"
             redirect_to events_path
         else
             render 'edit'

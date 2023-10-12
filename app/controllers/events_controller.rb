@@ -29,16 +29,14 @@ class EventsController < ApplicationController
         @event = Event.new(params.require(:event).permit(:start, :end, :user_id))
         @event.user = current_user
         if @event.save
-            flash[:notice] = "Hora registrada com sucesso !"
             get_events()
         else
-            flash[:alert] = "Erro ao marcar um horário ! Tente novamente"
+            render 'new'
         end
     end
 
     def destroy
         @event = Event.find(params[:id])
-        puts @event
         if @event.destroy
             flash[:notice] = "Removido com sucesso"
         else 
@@ -49,7 +47,6 @@ class EventsController < ApplicationController
     def require_same_user
         @event = Event.find(params[:id])
         if current_user.id != @event.user_id && !current_user.admin?
-            flash[:alert] = "Somente o usuário admin ou o usuário do agendamento podem removê-lo"
             render json: { error: "Unauthorized" }, status: :unprocessable_entity
         end
     end

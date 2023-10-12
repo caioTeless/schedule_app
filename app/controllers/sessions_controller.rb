@@ -8,16 +8,14 @@ class SessionsController < ApplicationController
         if @user && @user.authenticate(params[:session][:password]) && @user.active?
             session[:user_id] = @user.id
             session[:admin] = @user.admin
-            flash[:notice] = 'Login realizado !'
             redirect_to events_path
         else 
-            flash[:alert] = "Verifique o usuário e senha !"
+            flash[:alert] = "E-mail ou senha estão incorretos !"
             redirect_to root_path
         end
     end
 
     def destroy
-        flash[:notice] = "Logoff realizado !"
         session[:user_id] = nil
         redirect_to root_path
     end

@@ -7,12 +7,17 @@ var app = new Vue({
             start: '',
             end: '',
         },
+        errorMessage: '',
+        error: false,
         modalMethod: '',
-        eventId: 0,
     },
     methods: {
         renderScheduleCalendar() {
+
             var self = this;
+
+            let myToast = document.querySelector('.toast');
+            let bAlert = new bootstrap.Toast(myToast, {delay: 3000,});
 
             var initialTimeZone = 'UTC';
             var loadingEl = document.getElementById('loading');
@@ -34,7 +39,7 @@ var app = new Vue({
                 firstDay: 1,
                 weekends: false,
                 allDaySlot: false,
-                navLinks: true,
+                navLinks: false,
                 eventOverlap: false,
                 editable: false,
                 selectable: true,
@@ -42,12 +47,13 @@ var app = new Vue({
                 dayHeaderFormat: this.dayHeaderFormatUsingMoment,
                 dayMaxEventRows: true,
 
-                contentHeight: 455,
+                contentHeight: 458,
                 aspectRatio: 1,
                 views: {
                     week: {
                         dayHeaderFormat: {
                             weekday: 'long',
+                            day: 'numeric'
                         },
                     },
                 },
@@ -64,6 +70,7 @@ var app = new Vue({
 
                 select: function (eventInfo) {
 
+                    self.error = false;
                     var selectedDuration = eventInfo.end - eventInfo.start;
 
                     self.modalMethod = 'addSchedule';
@@ -92,6 +99,7 @@ var app = new Vue({
                                         type: 'POST',
                                         data: { event: this.eventData },
                                         success: function (e) {
+                                            bAlert.show();
                                             calendar.addEvent({
                                                 id: e.event_id,
                                                 title: $("#userName")[0].innerHTML,
@@ -100,21 +108,20 @@ var app = new Vue({
                                             });
                                         },
                                         error: function (e) {
-                                            alert('Erro ajax');
+                                            self.error = true;
+                                            self.errorMessage = "Não foi possível incluir o agendamento, recarregue a página e tente novamente !";
                                         }
                                     });
-
                                     $('#confirmModal').modal('hide');
-                                    setTimeout(function () {
-                                        $("#alert").fadeOut();
-                                    }, 3000);
                                 });
                             };
                         } else {
-                            alert('Não é possível agendar em datas passadas ou já existe agendamento !');
+                            self.error = true;
+                            self.errorMessage = "Não é possível agendar em datas passadas !";
                         }
                     } else {
-                        alert('Selecione apenas um horário por vez');
+                        self.error = true;
+                        self.errorMessage = "Selecione apenas um horário por vez";
                     }
                 },
 
@@ -133,7 +140,8 @@ var app = new Vue({
                                 });
                             },
                             error: function () {
-                                failureCallback('Error fetching events');
+                                self.error = true;
+                                self.errorMessage = "Erro ao carregar os eventos, recarregue a página ou tente novamente mais tarde !";
                             }
                         });
                     }
@@ -144,19 +152,20 @@ var app = new Vue({
                             type: 'DELETE',
                             success: function (data) {
                                 info.event.remove();
+                                bAlert.show();
                             },
                             error: function (e) {
-                                if (e.status = 422) {
-                                    alert('Você não está autorizado')
+                                if (e.status == 422) {
+                                    self.error = true;
+                                    self.errorMessage = "Somente o usuário administrador ou o próprio usuário do agendamento podem remover !";
                                 }
+                                else{
+                                    self.errorMessage = "Ocorreu um erro na remoção do agendamento";
+                                }  
                             }
                         })
-
                         $('#confirmModal').modal('hide');
                     })
-                    setTimeout(function () {
-                        $("#alert").fadeOut();
-                    }, 3000);
                 },
 
             });
@@ -177,16 +186,11 @@ var app = new Vue({
                     });
                 },
                 error: function () {
-                    failureCallback('Error fetching events');
+                    self.error = true;
+                    self.errorMessage = "Erro ao tentar carregar os eventos, recarregue a página e tente novamente !";
                 }
             });
         },
-        countDownChanged(dismissCountDown) {
-            this.dismissCountDown = dismissCountDown
-        },
-        showAlert() {
-            this.dismissCountDown = this.dismissSecs
-        }
 
     },
     computed: {
