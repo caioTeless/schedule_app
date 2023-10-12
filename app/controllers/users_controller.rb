@@ -3,11 +3,16 @@ class UsersController < ApplicationController
     before_action :set_user, only: [:edit, :update]
 
     def index
-        @users = User.all
-        unless @users.kind_of?(Array)
-            @users = @users.page(params[:page]).per(10)
-        else 
-            @users = Kaminari.paginate_array(@users).page(params[:page]).per(10)
+         if current_user.present?
+            @users = User.all
+            unless @users.kind_of?(Array)
+                @users = @users.page(params[:page]).per(10)
+            else 
+                @users = Kaminari.paginate_array(@users).page(params[:page]).per(10)
+            end
+        else
+            flash[:alert] = @@alert_message
+            redirect_to root_path
         end
     end
 
@@ -16,13 +21,11 @@ class UsersController < ApplicationController
     end
 
     def create
-        @user = User.new(params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation))
+        @user = User.new(user_params)
         if @user.save
-            flash[:notice] = "Usuário criado com sucesso !"
             session[:user_id] = @user.id
             redirect_to events_path
         else 
-            flash[:alert] = "Ocorreu uma inconsistência, verifique os campos !"
             render new_user_path
         end
     end
@@ -31,7 +34,7 @@ class UsersController < ApplicationController
     end
 
     def update
-        if @user.update(params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation, :admin, :active))
+        if @user.update(user_params)
             redirect_to events_path
         else
             render 'edit'
@@ -39,9 +42,24 @@ class UsersController < ApplicationController
     end
 
     def set_user
-        @user = User.find(params[:id])
-        @admin = user_is_admin
-        puts @admin
+        if current_user.present?
+            @user = User.find(params[:id])
+            @admin = user_is_admin
+        else
+            flash[:alert] = @@alert_message
+            redirect_to root_path
+        end
+    end
+
+    private
+
+    def user_params
+        if !@admin && @user.present?
+            @user.skip_password_validation = true
+            params.require(:user).permit(:first_name, :last_name, :username, :email)
+        else
+            params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation, :admin, :active)  
+        end 
     end
 
 end

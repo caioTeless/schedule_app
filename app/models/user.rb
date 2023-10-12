@@ -1,6 +1,6 @@
 class User < ApplicationRecord
 
-    #has_many :events
+    has_many :events
 
     validates :first_name, presence: true, length: {minimum: 2, maximum: 30}
     validates :last_name, presence: true, length: {minimum: 2, maximum: 30}
@@ -18,8 +18,8 @@ class User < ApplicationRecord
     format: {with: EMAIL_VALIDATOR_REGEX}
 
     has_secure_password
-    # validates :password, length: { minimum: 8 }, confirmation: true
-    # attr_accessor :password_confirmation
-    # validates :password_confirmation, confirmation: { message: "A confirmação de senha não coincide com a senha" }
+    validates :password, length: { minimum: 8 }, confirmation: true, unless: :skip_password_validation
+    attr_accessor :password_confirmation, :skip_password_validation
+    validates :password_confirmation, confirmation: { message: "A confirmação de senha não coincide com a senha" }
     
 end

@@ -3,16 +3,21 @@ class EventsController < ApplicationController
     before_action :require_same_user, only: [:destroy]
 
     def index
-        @user = User.find(session[:user_id])
+        if current_user.present?
+            @user = User.find(session[:user_id])
 
-        if @user.admin?
-            @users = User.all
-        end 
-        
-        @admin = user_is_admin
+            if @user.admin?
+                @users = User.all
+            end 
+            
+            @admin = user_is_admin
 
-        @current_user_name = @user.first_name
-        @current_user_id = @user.id
+            @current_user_name = "#{@user.first_name} #{@user.last_name}"
+            @current_user_id = @user.id
+        else
+            flash[:alert] = @@alert_message
+            redirect_to root_path
+        end
     end
 
     def get_events
@@ -26,12 +31,12 @@ class EventsController < ApplicationController
     end
 
     def create
-        @event = Event.new(params.require(:event).permit(:start, :end, :user_id))
+        @event = Event.new(event_params)
         @event.user = current_user
         if @event.save
             get_events()
         else
-            render 'new'
+            render 'index'
         end
     end
 
@@ -46,4 +51,11 @@ class EventsController < ApplicationController
             render json: { error: "Unauthorized" }, status: :unprocessable_entity
         end
     end
+
+    private
+
+    def event_params
+        params.require(:event).permit(:start, :end, :user_id)
+    end
+    
 end

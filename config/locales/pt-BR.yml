@@ -14,7 +14,7 @@ pt-BR:
         username: "Nome de usuário"
         email: "E-mail"
         password: "Senha"
-        password_confirmation: "Confirmar"
+        password_confirmation: "Confirmar senha"
     errors:
       models:
         user:

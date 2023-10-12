@@ -10,6 +10,7 @@ var app = new Vue({
         errorMessage: '',
         error: false,
         modalMethod: '',
+        loading: false,
     },
     methods: {
         renderScheduleCalendar() {
@@ -62,9 +63,9 @@ var app = new Vue({
 
                 loading: function (bool) {
                     if (bool) {
-                        loadingEl.style.display = 'inline';
+                        self.loading = true;
                     } else {
-                        loadingEl.style.display = 'none';
+                        self.loading = false;
                     }
                 },
 
@@ -121,11 +122,12 @@ var app = new Vue({
                         }
                     } else {
                         self.error = true;
-                        self.errorMessage = "Selecione apenas um horário por vez";
+                        self.errorMessage = "Selecione apenas um horário por vez !";
                     }
                 },
 
                 eventClick: function (info) {
+                    self.error = false;
                     self.modalMethod = 'delSchedule';
                     var id = info.event.extendedProps.event_id;
                     if (!id > 0) {
@@ -155,8 +157,8 @@ var app = new Vue({
                                 bAlert.show();
                             },
                             error: function (e) {
+                                self.error = true;
                                 if (e.status == 422) {
-                                    self.error = true;
                                     self.errorMessage = "Somente o usuário administrador ou o próprio usuário do agendamento podem remover !";
                                 }
                                 else{
