@@ -15,7 +15,7 @@
 <div class="container">
   <div class="row">
     <div class="d-flex flex-row-reverse">
-        <p class="p-3"> | <%= link_to "Logout", logout_path, method: :delete %></p>
+        <p class="p-3"> | <%= link_to "Sair", destroy_user_session_path, method: :delete %></p>
         <div id="iuShow" style="display: none;"><%= @current_user_id %></div>
         <div class="dropdown">
           <a class="text-decoration-none text-secondary" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -23,7 +23,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <li><%= link_to "Editar Dados", edit_user_path(@user), class: "dropdown-item" %></li>
-            <% if @admin %>
+            <% if @user.admin %>
               <li><%= link_to "Usuários", users_path, class: "dropdown-item" %></li>
             <% end %>
           </ul>

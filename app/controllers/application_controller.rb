@@ -1,25 +1,24 @@
 class ApplicationController < ActionController::Base
-    helper_method :current_user, :logged_in?
 
-    @@alert_message = "É necessário estar logado para acessar a agenda !"
+    before_action :configure_permitted_parameters, if: :devise_controller?
 
-    def current_user
-        @current_user ||= User.find(session[:user_id]) if session[:user_id] 
+    protected
+  
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :password_confirmation, :first_name, :last_name, :username])
+      devise_parameter_sanitizer.permit(:account_update, keys: [:email, :password, :password_confirmation, :current_password, :first_name, :last_name, :username, :admin, :active])
     end
 
-    def user_is_admin
-        @current_user ||= User.find(session[:user_id]) if session[:user_id] 
-        return @current_user.admin
+    def resource_name
+      :user
+    end
+      
+    def resource
+      @resource ||= User.new
+    end
+      
+    def devise_mapping
+      @devise_mapping ||= Devise.mappings[:user]
     end
 
-    def logged_in?
-        !!current_user 
-    end
-
-    def require_user
-        if !logged_in?
-            flash[:alert] = @@alert_message
-            redirect_to login_path
-        end
-    end
 end

@@ -1,18 +1,19 @@
 class UsersController < ApplicationController
 
     before_action :set_user, only: [:edit, :update]
+    before_action :authenticate_user!
 
     def index
-         if current_user.present?
-            @users = User.all
+        @users = User.all
+        if current_user != nil && current_user.active
             unless @users.kind_of?(Array)
                 @users = @users.page(params[:page]).per(10)
             else 
                 @users = Kaminari.paginate_array(@users).page(params[:page]).per(10)
             end
         else
-            flash[:alert] = @@alert_message
-            redirect_to root_path
+            flash[:alert] = "Usuário inativo ou inexistente, contate o administrador !"
+            redirect_to new_user_session_path
         end
     end
 
@@ -23,10 +24,9 @@ class UsersController < ApplicationController
     def create
         @user = User.new(user_params)
         if @user.save
-            session[:user_id] = @user.id
             redirect_to events_path
         else 
-            render new_user_path
+            render new_user_session_path
         end
     end
 
@@ -42,24 +42,16 @@ class UsersController < ApplicationController
     end
 
     def set_user
-        if current_user.present?
-            @user = User.find(params[:id])
-            @admin = user_is_admin
-        else
-            flash[:alert] = @@alert_message
-            redirect_to root_path
-        end
+        @user = User.find(params[:id])
+        @admin = current_user.id
     end
 
     private
 
     def user_params
-        if !@admin && @user.present?
-            @user.skip_password_validation = true
-            params.require(:user).permit(:first_name, :last_name, :username, :email)
-        else
-            params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation, :admin, :active)  
-        end 
+        @user.skip_password_validation = true
+        params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation, :admin, :active)  
     end
+
 
 end

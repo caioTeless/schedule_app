@@ -1,25 +1,28 @@
 class User < ApplicationRecord
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
-    has_many :events
+  has_many :events
 
-    validates :first_name, presence: true, length: {minimum: 2, maximum: 30}
-    validates :last_name, presence: true, length: {minimum: 2, maximum: 30}
+  validates :first_name, presence: true, length: { minimum: 2, maximum: 30 }
+  validates :last_name, presence: true, length: { minimum: 2, maximum: 30 }
 
-    before_save { self.email = email.downcase }    
-    validates :username, presence: true,
-    uniqueness: {case_sensitive: false},
-    length: {minimum: 3, maximum: 20}
+  before_save { self.email = email.downcase }
 
-    EMAIL_VALIDATOR_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-    
-    validates :email, presence: true,
-    uniqueness: {case_sensitive: false},
-    length: {maximum: 105},  
-    format: {with: EMAIL_VALIDATOR_REGEX}
+  validates :username, presence: true,
+                      uniqueness: { case_sensitive: false },
+                      length: { minimum: 3, maximum: 20 }
 
-    has_secure_password
-    validates :password, length: { minimum: 8 }, confirmation: true, unless: :skip_password_validation
-    attr_accessor :password_confirmation, :skip_password_validation
-    validates :password_confirmation, confirmation: { message: "A confirmação de senha não coincide com a senha" }
-    
+  validates :email, presence: true,
+                    uniqueness: { case_sensitive: false },
+                    length: { maximum: 105 }
+
+  validates :password, length: { minimum: 6 }, confirmation: true, unless: :skip_password_validation
+
+  validates :password_confirmation, confirmation: true
+
+  attr_accessor :skip_password_validation
+
+  def active_for_authentication?
+    super and self.active?
+  end
 end

@@ -1,23 +1,16 @@
 class EventsController < ApplicationController
 
     before_action :require_same_user, only: [:destroy]
+    before_action :authenticate_user!
 
     def index
-        if current_user.present?
-            @user = User.find(session[:user_id])
-
+           @user = User.find(current_user.id)
             if @user.admin?
                 @users = User.all
             end 
             
-            @admin = user_is_admin
-
             @current_user_name = "#{@user.first_name} #{@user.last_name}"
             @current_user_id = @user.id
-        else
-            flash[:alert] = @@alert_message
-            redirect_to root_path
-        end
     end
 
     def get_events

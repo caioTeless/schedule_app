@@ -1,0 +1,39 @@
+
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                                <h3 class="text-center form-title my-4">
+                                    Atualize seus dados !
+                                </h3>
+                            </div>
+                            <%= render 'shared/errors', obj: @user %>
+                            <div class="card-body">
+                                <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= f.password_field :password, class: "form-control", id:"inputPassword", placeholder:"Password"%>
+                                        <%= f.label :password, for: "inputPassword" %>
+                                    </div>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= f.password_field :password_confirmation, class: "form-control", id:"inputPasswordConfirmation", placeholder:"Password"%>
+                                        <%= f.label :password_confirmation, for: "inputPasswordConfirmation" %>
+                                    </div>
+                                  <div class="d-grid gap-2 col-6 mx-auto mt-3">
+                                      <%= f.submit @user.new_record? ? "Confirmar" : "Atualizar", class: "btn btn-outline-info btn-lg", data: { disable_with: "Validando" } %>
+                                      <%= link_to "Sala de reunião", events_path, class:"btn btn-outline-info btn-lg"%>  
+                                      <% if @user.admin %>
+                                        <%= link_to "Usuários", users_path, class:"btn btn-outline-info btn-lg"%> 
+                                      <% end %> 
+                                  </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

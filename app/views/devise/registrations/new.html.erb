@@ -1,0 +1,55 @@
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                            <h3 class="text-center form-title my-4">
+                                <% if @user.new_record? %>
+                                    Cadastre-se
+                                <% end %>
+                            </h3>
+                        </div>
+                        <%= render 'shared/errors', obj: @user %>
+                        <div class="card-body">
+                            <%= form_for(resource, as: resource_name, class: "card border-0 rounded-lg", url: registration_path(resource_name)) do |f| %>
+                            <div class="form-floating mb-3 mt-3 mb-md-0">
+                              <%= f.text_field :first_name, class: "form-control", id:"inputFirstName", placeholder:"Nome"%>
+                                <%= f.label :first_name, for: "inputFirstName" %>
+                                </div>
+                                <div class="form-floating mb-3 mt-3 mb-md-0">
+                                    <%= f.text_field :last_name, class: "form-control", id:"inputLastName", placeholder:"Sobrenome"%>
+                                    <%= f.label :last_name, for: "inputLastName" %>
+                                </div>
+                                <div class="form-floating mb-3 mt-3 mb-md-0">
+                                    <%= f.text_field :username, class: "form-control", id:"inputUsername", placeholder:"Username"%>
+                                    <%= f.label :username, for: "inputUsername" %>
+                                </div>
+                                  <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= f.text_field :email, class: "form-control", id:"inputEmail", placeholder:"E-mail", autofocus: true, autocomplete: "email"%>
+                                        <%= f.label :email, for: "inputEmail" %>
+                                    </div>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">                 
+                                         <%= f.password_field :password, class: "form-control", id:"inputPassword", placeholder:"Password" %>
+                                         <%= f.label :password, for: "inputPassword" %>
+                                    </div>
+                                    <div class="form-floating mb-3 mt-3 mb-md-0">
+                                        <%= f.password_field :password_confirmation, class: "form-control", id:"inputPasswordConfirmation", placeholder:"Confirmation"%>
+                                        <%= f.label :password_confirmation, for: "inputPasswordConfirmation" %>
+                                    </div>
+                                <div class="d-grid gap-2 col-6 mx-auto mt-3">
+                                    <%= f.submit @user.new_record? ? "Confirmar" : "Atualizar", class: "btn btn-outline-info btn-lg", data: { disable_with: "Validando" } %>
+                                    <% if @user.new_record? %>
+                                        <%= link_to "Tela de Login", new_user_session_path, class:"btn btn-outline-info btn-lg"%>
+                                    <% end %>
+                                </div>
+                            <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
