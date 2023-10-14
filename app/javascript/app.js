@@ -4,8 +4,8 @@ var app = new Vue({
         confirmModal: false,
         eventData: {
             userId: '',
-            start: '',
-            end: '',
+            startAt: '',
+            endAt: '',
         },
         errorMessage: '',
         error: false,
@@ -82,7 +82,7 @@ var app = new Vue({
 
                     var isOverlap = events.some(function (existingEvent) {
                         return (
-                            eventInfo.start < existingEvent.end && eventInfo.end > existingEvent.start
+                            eventInfo.start < existingEvent.endAt && eventInfo.end > existingEvent.startAt
                         );
                     });
                     if (selectedDuration === 60 * 60 * 1000) {
@@ -92,8 +92,8 @@ var app = new Vue({
                                 $('#confirmModalButton').off('click').on('click', function () {
                                     this.eventData = {
                                         user_id: $("#iuShow")[0].innerHTML,
-                                        start: eventInfo.startStr,
-                                        end: eventInfo.endStr
+                                        startAt: eventInfo.startStr,
+                                        endAt: eventInfo.endStr
                                     }
                                     $.ajax({
                                         url: "events",
@@ -136,7 +136,7 @@ var app = new Vue({
                             type: 'GET',
                             success: function (data) {
                                 data.map(function (x) {
-                                    if (moment.utc(x.start).format('YYYY/MM/DD HH:mm') == moment.utc(info.event.startStr).format('YYYY/MM/DD HH:mm')) {
+                                    if (moment.utc(x.startAt).format('YYYY/MM/DD HH:mm') == moment.utc(info.event.startStr).format('YYYY/MM/DD HH:mm')) {
                                         id = x.event_id
                                     }
                                 });
@@ -181,8 +181,8 @@ var app = new Vue({
                         calendar.addEvent({
                             event_id: newData.event_id,
                             title: newData.first_name + ' ' + newData.last_name,
-                            start: newData.start,
-                            end: newData.end,
+                            start: newData.startAt,
+                            end: newData.endAt,
                             user_id: newData.user_id
                         })
                     });

@@ -15,7 +15,7 @@ class EventsController < ApplicationController
 
     def get_events
         @events = Event.all
-        json_events_users = @events.map do |event| { event_id: event.id, start: event.start, end: event.end, user_id: event.user_id, first_name: event.user.first_name.upcase, last_name: event.user.last_name.upcase} end
+        json_events_users = @events.map do |event| { event_id: event.id, startAt: event.startAt, endAt: event.endAt, user_id: event.user_id, first_name: event.user.first_name.upcase, last_name: event.user.last_name.upcase} end
         render json: json_events_users
     end
 
@@ -48,7 +48,7 @@ class EventsController < ApplicationController
     private
 
     def event_params
-        params.require(:event).permit(:start, :end, :user_id)
+        params.require(:event).permit(:startAt, :endAt, :user_id)
     end
     
 end

@@ -1,12 +1,12 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
-  has_many :events
-
+  has_many :events, inverse_of: :user
+  
   validates :first_name, presence: true, length: { minimum: 2, maximum: 30 }
   validates :last_name, presence: true, length: { minimum: 2, maximum: 30 }
 
-  before_save { self.email = email.downcase }
+  before_save :set_email_downcase
 
   validates :username, presence: true,
                       uniqueness: { case_sensitive: false },
@@ -25,4 +25,9 @@ class User < ApplicationRecord
   def active_for_authentication?
     super and self.active?
   end
+
+  def set_email_downcase
+    self.email = email.downcase
+  end
+  
 end
