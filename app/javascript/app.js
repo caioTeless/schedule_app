@@ -48,7 +48,7 @@ var app = new Vue({
                 dayHeaderFormat: this.dayHeaderFormatUsingMoment,
                 dayMaxEventRows: true,
 
-                contentHeight: 458,
+                contentHeight: 508,
                 aspectRatio: 1,
                 views: {
                     week: {
@@ -58,8 +58,8 @@ var app = new Vue({
                         },
                     },
                 },
-                slotMinTime: "06:00:00",
-                slotMaxTime: "23:00:00",
+                slotMinTime: "05:00:00",
+                slotMaxTime: "23:59:00",
 
                 loading: function (bool) {
                     if (bool) {
@@ -77,14 +77,15 @@ var app = new Vue({
                     self.modalMethod = 'addSchedule';
                     var events = calendar.getEvents();
                     var currentDate = new Date();
-                    currentDate = moment(currentDate).format('YYYY/MM/DD HH:mm')
-                    var formatStartDate = moment.utc(eventInfo.startStr).format('YYYY/MM/DD HH:mm')
+                    currentDate = self.formatDate(currentDate);
+                    var formatStartDate = self.formatDate(eventInfo.startStr);
 
                     var isOverlap = events.some(function (existingEvent) {
                         return (
                             eventInfo.start < existingEvent.endAt && eventInfo.end > existingEvent.startAt
                         );
                     });
+
                     if (selectedDuration === 60 * 60 * 1000) {
                         if (formatStartDate > currentDate) {
                             if (!isOverlap) {
@@ -127,47 +128,58 @@ var app = new Vue({
                 },
 
                 eventClick: function (info) {
+
+                    var currentDate = new Date();
                     self.error = false;
                     self.modalMethod = 'delSchedule';
+
+                    currentDate = self.formatDate(currentDate);
+                    var formatStartDate = self.formatDate(info.event.startStr);
+
                     var id = info.event.extendedProps.event_id;
-                    if (!id > 0) {
-                        $.ajax({
-                            url: 'get_events',
-                            type: 'GET',
-                            success: function (data) {
-                                data.map(function (x) {
-                                    if (moment.utc(x.startAt).format('YYYY/MM/DD HH:mm') == moment.utc(info.event.startStr).format('YYYY/MM/DD HH:mm')) {
-                                        id = x.event_id
-                                    }
-                                });
-                            },
-                            error: function () {
-                                self.error = true;
-                                self.errorMessage = "Erro ao carregar os eventos, recarregue a página ou tente novamente mais tarde !";
-                            }
-                        });
-                    }
-                    $('#confirmModal').modal('show');
-                    $('#confirmModalButton').off('click').on('click', function () {
-                        $.ajax({
-                            url: 'events/' + id,
-                            type: 'DELETE',
-                            success: function (data) {
-                                info.event.remove();
-                                bAlert.show();
-                            },
-                            error: function (e) {
-                                self.error = true;
-                                if (e.status == 422) {
-                                    self.errorMessage = "Somente o usuário administrador ou o próprio usuário do agendamento podem remover !";
+                    if (formatStartDate > currentDate){
+                        if (!id > 0) {
+                            $.ajax({
+                                url: 'get_events',
+                                type: 'GET',
+                                success: function (data) {
+                                    data.map(function (x) {
+                                        if (self.formatDate(x.startAt) == self.formatDate(info.event.startStr)) {
+                                            id = x.event_id
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    self.error = true;
+                                    self.errorMessage = "Erro ao carregar os eventos, recarregue a página ou tente novamente mais tarde !";
                                 }
-                                else{
-                                    self.errorMessage = "Ocorreu um erro na remoção do agendamento";
-                                }  
-                            }
+                            });
+                        }
+                        $('#confirmModal').modal('show');
+                        $('#confirmModalButton').off('click').on('click', function () {
+                            $.ajax({
+                                url: 'events/' + id,
+                                type: 'DELETE',
+                                success: function (data) {
+                                    info.event.remove();
+                                    bAlert.show();
+                                },
+                                error: function (e) {
+                                    self.error = true;
+                                    if (e.status == 422) {
+                                        self.errorMessage = "Somente o usuário administrador ou o próprio usuário do agendamento podem remover !";
+                                    }
+                                    else{
+                                        self.errorMessage = "Ocorreu um erro na remoção do agendamento";
+                                    }  
+                                }
+                            })
+                            $('#confirmModal').modal('hide');
                         })
-                        $('#confirmModal').modal('hide');
-                    })
+                    }else {
+                        self.error = true;
+                        self.errorMessage = "Apenas é possível visualizar agendamentos passados !";
+                    }
                 },
 
             });
@@ -193,6 +205,9 @@ var app = new Vue({
                 }
             });
         },
+        formatDate(date) {
+            return moment(date).format('YYYY/MM/DD HH:mm');
+        }
 
     },
     computed: {
@@ -200,7 +215,7 @@ var app = new Vue({
             return this.modalMethod === 'addSchedule' ? 'Agendar' : 'Remover';
         },
         modalMessage() {
-            return this.modalMethod === 'addSchedule' ? 'Confirma o agendamento ? ' : 'Deseja remover o agendamento ?';
+            return this.modalMethod === 'addSchedule' ? 'Confirma o agendamento ? ' : 'Deseja remover o agendamento ? ';
         },
         alertTitle() {
             return this.modalMethod === 'addSchedule' ? 'Adicionado com sucesso' : 'Removido com sucesso';
