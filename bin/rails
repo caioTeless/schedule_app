@@ -2,3 +2,5 @@
 APP_PATH = File.expand_path("../config/application", __dir__)
 require_relative "../config/boot"
 require "rails/commands"
+production:
+  secret_key_base: LK2QFtXIgDNIkrMXxW2Vu2T2YTDg4QYjEVpyuEMB+BYH+sDsVz6RH5B1ctDBli7mY3cebvmmMMp0PLLvP78g1v49QC/n0rF9Rfb4Ae5MwS+KJNPcyIDWbNJzGlhhgBuj6I7xzXQ/fG2/K7mmK7PNlP5zXl5XIjg0qUP/X0njq+54q6l9j1GHKyA350hRza7ShzdFbx9T8ujfr6TvNkVZJc2Q5e0Dw/ozSMUdoryH7+TysbBMS6Az1DNs5uQ4dskZOBwjxyJkqfSgOoHYKGd+/pzdpO82xPdtEBUgPWyW9rNpHw3IHyT9EKsSf5z+2qc7H033Kor38QqtknD30M9n/n5cI/+LOoUfl/vcBEtMtGIhEG1Yp5ClCYETf5FWnKv3mzX9UpahPtfzibvwgeFrhg1iCKczHwieIumD--vqMIfcqVLrEwdBhM--3H2aJzc8UBgyKLZVhMkv8g==
