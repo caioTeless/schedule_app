@@ -110,7 +110,7 @@ var app = new Vue({
                                             calendar.addEvent({
                                                 id: e.event_id,
                                                 title: $("#userName")[0].innerHTML,
-                                                reason: e.reason,
+                                                reason: self.inputReasonValue,
                                                 start: eventInfo.startStr,
                                                 end: eventInfo.endStr,
                                             });
@@ -133,8 +133,18 @@ var app = new Vue({
                     }
                 },
 
-                eventClick: function (info) {
+                eventDidMount: function(info) {
+                    $(info.el).popover({
+                        title: 'Descrição',
+                        placement: 'top',
+                        trigger: 'hover',
+                        content: info.event._def.extendedProps.reason,
+                        container: 'body'
+                    });
+                  },
+                
 
+                eventClick: function (info) {
                     var currentDate = new Date();
                     self.error = false;
                     self.modalMethod = 'delSchedule';

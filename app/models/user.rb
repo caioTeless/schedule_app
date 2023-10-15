@@ -16,12 +16,6 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false },
                     length: { maximum: 105 }
 
-  validates :password, length: { minimum: 6 }, confirmation: true, unless: :skip_password_validation
-
-  validates :password_confirmation, confirmation: true
-
-  attr_accessor :skip_password_validation
-
   def active_for_authentication?
     super and self.active?
   end
