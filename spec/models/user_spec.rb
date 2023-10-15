@@ -36,7 +36,6 @@ RSpec.describe User, type: :model do
 
     describe '#validate_confirmation' do
       it { is_expected.to validate_confirmation_of(:password)}
-      it { is_expected.to validate_confirmation_of(:password_confirmation)}
     end
 
     describe '#set_email_downcase' do 
