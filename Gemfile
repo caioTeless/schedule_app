@@ -88,3 +88,7 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 5.3'
 end
 
+group :production do 
+  gem 'pg'
+end
+
