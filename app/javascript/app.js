@@ -11,6 +11,8 @@ var app = new Vue({
         error: false,
         modalMethod: '',
         loading: false,
+        disabledInput: 0,
+        inputReasonValue: '',
     },
     methods: {
         renderScheduleCalendar() {
@@ -71,8 +73,10 @@ var app = new Vue({
 
                 select: function (eventInfo) {
 
-                    self.error = false;
+                    self.inputReasonValue = '';
+                    self.error = false;   
                     var selectedDuration = eventInfo.end - eventInfo.start;
+                    self.disabledInput = 0;
 
                     self.modalMethod = 'addSchedule';
                     var events = calendar.getEvents();
@@ -93,6 +97,7 @@ var app = new Vue({
                                 $('#confirmModalButton').off('click').on('click', function () {
                                     this.eventData = {
                                         user_id: $("#iuShow")[0].innerHTML,
+                                        reason: self.inputReasonValue,
                                         startAt: eventInfo.startStr,
                                         endAt: eventInfo.endStr
                                     }
@@ -105,6 +110,7 @@ var app = new Vue({
                                             calendar.addEvent({
                                                 id: e.event_id,
                                                 title: $("#userName")[0].innerHTML,
+                                                reason: e.reason,
                                                 start: eventInfo.startStr,
                                                 end: eventInfo.endStr,
                                             });
@@ -132,20 +138,24 @@ var app = new Vue({
                     var currentDate = new Date();
                     self.error = false;
                     self.modalMethod = 'delSchedule';
-
+                    self.disabledInput = 1;
+                    
                     currentDate = self.formatDate(currentDate);
                     var formatStartDate = self.formatDate(info.event.startStr);
 
                     var id = info.event.extendedProps.event_id;
+                    var reason = info.event.extendedProps.reason;
+
                     if (formatStartDate > currentDate){
-                        if (!id > 0) {
+                        if (!id > 0 || id === undefined) {
                             $.ajax({
                                 url: 'get_events',
                                 type: 'GET',
                                 success: function (data) {
                                     data.map(function (x) {
                                         if (self.formatDate(x.startAt) == self.formatDate(info.event.startStr)) {
-                                            id = x.event_id
+                                            id = x.event_id;
+                                            self.inputReasonValue = x.reason;
                                         }
                                     });
                                 },
@@ -154,8 +164,9 @@ var app = new Vue({
                                     self.errorMessage = "Erro ao carregar os eventos, recarregue a página ou tente novamente mais tarde !";
                                 }
                             });
-                        }
-                        $('#confirmModal').modal('show');
+                        }    
+                        self.inputReasonValue = reason;                    
+                        $('#confirmModal').modal('show');        
                         $('#confirmModalButton').off('click').on('click', function () {
                             $.ajax({
                                 url: 'events/' + id,
@@ -191,6 +202,7 @@ var app = new Vue({
                 success: function (data) {
                     data.forEach(function (newData, i) {
                         calendar.addEvent({
+                            reason: newData.reason,
                             event_id: newData.event_id,
                             title: newData.first_name + ' ' + newData.last_name,
                             start: newData.startAt,

@@ -42,6 +42,8 @@
       </div>
       <div class="modal-body">
         <p>{{ modalMessage }}</p>
+        <label>Descrição</label>
+        <input type="text" id="inputReason" class="form-control validate" v-model="inputReasonValue" :disabled="disabledInput == 1">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
