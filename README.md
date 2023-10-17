@@ -1,24 +1,13 @@
-# README
+# PROJETO AGENDA
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Versão do ruby e do Rails utilizadas: 
+  - Ruby 3.2.2
+  - Rails 7.0.8
 
-Things you may want to cover:
+Ferramentas externas utilizadas:
+  - Vue – Controle de todo o sistema, controle do modal e informações na exibição.
+  - Jquery – Controle do modal, auxílio no evento de click no modal, requisição ajax.
+  - Bootstrap – Formatação no geral, mensagens de alerta, toda regra visual.
+  - Fullcalendar – Toda estrutura básica do calendário é baseado nesse plugin.
+  - Moment – Formatação de datas.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
