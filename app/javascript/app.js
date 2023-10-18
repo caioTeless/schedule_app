@@ -16,9 +16,7 @@ var app = new Vue({
     },
     methods: {
         renderScheduleCalendar() {
-
             var self = this;
-
             let myToast = document.querySelector('.toast');
             let bAlert = new bootstrap.Toast(myToast, {delay: 3000,});
 
@@ -72,7 +70,6 @@ var app = new Vue({
                 },
 
                 select: function (eventInfo) {
-
                     self.inputReasonValue = '';
                     self.error = false;   
                     var selectedDuration = eventInfo.end - eventInfo.start;
@@ -81,15 +78,14 @@ var app = new Vue({
                     self.modalMethod = 'addSchedule';
                     var events = calendar.getEvents();
                     var currentDate = new Date();
-                    currentDate = self.formatDate(currentDate);
-                    var formatStartDate = self.formatDate(eventInfo.startStr);
+                    currentDate = self.formatDate(currentDate, false);
+                    var formatStartDate = self.formatDate(eventInfo.startStr, true);
 
                     var isOverlap = events.some(function (existingEvent) {
                         return (
                             eventInfo.start < existingEvent.endAt && eventInfo.end > existingEvent.startAt
                         );
                     });
-
                     if (selectedDuration === 60 * 60 * 1000) {
                         if (formatStartDate > currentDate) {
                             if (!isOverlap) {
@@ -150,8 +146,8 @@ var app = new Vue({
                     self.modalMethod = 'delSchedule';
                     self.disabledInput = 1;
                     
-                    currentDate = self.formatDate(currentDate);
-                    var formatStartDate = self.formatDate(info.event.startStr);
+                    currentDate = self.formatDate(currentDate, false);
+                    var formatStartDate = self.formatDate(info.event.startStr, true);
 
                     var id = info.event.extendedProps.event_id;
                     var reason = info.event.extendedProps.reason;
@@ -227,8 +223,11 @@ var app = new Vue({
                 }
             });
         },
-        formatDate(date) {
-            return moment(date).format('YYYY/MM/DD HH:mm');
+        formatDate(date, isEventDate) {
+            if(!isEventDate) {
+                return moment(date).format('DD/MM/YYYY HH:mm')
+            } 
+            return moment(date).utc().format('DD/MM/YYYY HH:mm')
         }
 
     },
