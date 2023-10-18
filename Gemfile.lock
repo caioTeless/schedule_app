@@ -172,8 +172,6 @@ GEM
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
-    pg (1.5.4)
-    pg (1.5.4-x64-mingw-ucrt)
     popper_js (2.11.8)
     psych (5.1.0)
       stringio
@@ -318,7 +316,6 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   kaminari
-  pg
   puma (~> 5.0)
   rails (~> 7.0.8)
   rails-i18n (~> 7.0.0)
